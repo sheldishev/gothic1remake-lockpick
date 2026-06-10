@@ -161,3 +161,5 @@ Priority: fewest moves first, then fewest plate switches.
 ---
 
 *Fan tool, not affiliated with THQ Nordic or Alkimia Interactive.*
+
+*Инструмент на ~99% вайбкод / ~99% vibe coded.*
