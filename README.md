@@ -1,8 +1,10 @@
 # Gothic 1 Remake — Lockpick Solver
 
-Помощник для мини-игры со взломом замков для **Gothic 1 Remake**: вводите стартовые положения и связи между пластинами — получаете пошаговое решение.
+Помощник для мини-игры со взломом замков в **Gothic 1 Remake**: вводите стартовые положения и связи между пластинами — получаете пошаговое решение.
 
 A helper for the **Gothic 1 Remake** lockpick minigame: set starting positions and plate links, get a step-by-step solution.
+
+**[Русский](#русский)** · **[English](#english)**
 
 ---
 
@@ -20,11 +22,14 @@ A helper for the **Gothic 1 Remake** lockpick minigame: set starting positions a
 - Графический интерфейс: сетка «старт + влияния», кнопка «Решить», встроенный пример.
 - Интерфейс и текст решения на **русском** и **английском** (переключатель RU / EN).
 - Пошаговый вывод вроде: *«Пластинку 2 — 4 раза вправо»*.
-- Сборка в **один исполняемый файл** (macOS / Windows).
+- Сборка в **один исполняемый файл** (macOS / Windows / Linux).
+
+### Зависимости
+
+- **Запуск из исходников:** Python **3.10+** со встроенным **tkinter** (отдельные пакеты не нужны).
+- **Сборка бинарника:** [PyInstaller](https://pyinstaller.org/) — ставится автоматически при первом запуске `build.sh` / `build.bat`.
 
 ### Как запустить
-
-Нужен Python 3.10+ с tkinter.
 
 ```bash
 python3 plate_puzzle_gui.py
@@ -36,11 +41,14 @@ python3 plate_puzzle_gui.py
 python3 plate_puzzle_solver.py --plates 6 --positions 6,5,5,7,1,4 --example
 ```
 
+Дополнительные опции CLI: `--influences-json` для связей в формате JSON.
+
 ### Сборка бинарника
 
 **macOS / Linux:**
 
 ```bash
+chmod +x build.sh   # один раз, если скрипт не исполняемый
 ./build.sh
 # → dist/PlatePuzzle
 ```
@@ -52,7 +60,7 @@ build.bat
 REM → dist\PlatePuzzle.exe
 ```
 
-При первом запуске PyInstaller установится автоматически.
+Каталоги `build/` и `dist/` создаются PyInstaller и перечислены в `.gitignore`.
 
 ### Алгоритм (кратко)
 
@@ -71,7 +79,8 @@ REM → dist\PlatePuzzle.exe
 | `plate_puzzle_gui.py` | GUI |
 | `plate_puzzle_solver.py` | Алгоритм и CLI |
 | `i18n.py` | Строки RU / EN |
-| `build.sh` / `build.bat` | Сборка PyInstaller |
+| `PlatePuzzle.spec` | Конфигурация PyInstaller |
+| `build.sh` / `build.bat` | Сборка бинарника |
 
 ---
 
@@ -89,11 +98,14 @@ REM → dist\PlatePuzzle.exe
 - Grid UI for start positions and influence links, built-in example, one-click solve.
 - **Russian** and **English** UI and solution text (RU / EN toggle).
 - Step-by-step output like: *“Plate 2 — 4 times right”*.
-- **Single-file** builds for macOS and Windows.
+- **Single-file** builds for macOS, Windows, and Linux.
+
+### Dependencies
+
+- **Run from source:** Python **3.10+** with **tkinter** (no extra pip packages).
+- **Build a binary:** [PyInstaller](https://pyinstaller.org/) — installed automatically on the first `build.sh` / `build.bat` run.
 
 ### Run
-
-Python 3.10+ with tkinter.
 
 ```bash
 python3 plate_puzzle_gui.py
@@ -105,11 +117,14 @@ CLI (no GUI):
 python3 plate_puzzle_solver.py --plates 6 --positions 6,5,5,7,1,4 --example
 ```
 
+Extra CLI options: `--influences-json` for influence links as JSON.
+
 ### Build a standalone binary
 
 **macOS / Linux:**
 
 ```bash
+chmod +x build.sh   # once, if the script is not executable
 ./build.sh
 # → dist/PlatePuzzle
 ```
@@ -121,7 +136,7 @@ build.bat
 REM → dist\PlatePuzzle.exe
 ```
 
-PyInstaller is installed on first build if missing.
+The `build/` and `dist/` directories are produced by PyInstaller and listed in `.gitignore`.
 
 ### How it solves (short version)
 
@@ -140,7 +155,8 @@ Priority: fewest moves first, then fewest plate switches.
 | `plate_puzzle_gui.py` | GUI |
 | `plate_puzzle_solver.py` | Solver + CLI |
 | `i18n.py` | RU / EN strings |
-| `build.sh` / `build.bat` | PyInstaller build |
+| `PlatePuzzle.spec` | PyInstaller configuration |
+| `build.sh` / `build.bat` | Binary build scripts |
 
 ---
 
