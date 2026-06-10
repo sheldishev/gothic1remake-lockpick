@@ -6,6 +6,8 @@ A helper for the **Gothic 1 Remake** lockpick minigame: set starting positions a
 
 **[Русский](#русский)** · **[English](#english)**
 
+![GUI: встроенный пример и решение на английском](docs/gui-example-en.png)
+
 ---
 
 ## Русский
@@ -19,7 +21,7 @@ A helper for the **Gothic 1 Remake** lockpick minigame: set starting positions a
 
 ### Что умеет программа
 
-- Графический интерфейс: сетка «старт + влияния», кнопка «Решить», встроенный пример.
+- Графический интерфейс: сетка «старт + влияния», кнопка «Решить», встроенный пример (см. скриншот выше).
 - Интерфейс и текст решения на **русском** и **английском** (переключатель RU / EN).
 - Пошаговый вывод вроде: *«Пластинку 2 — 4 раза вправо»*.
 - Сборка в **один исполняемый файл** (macOS / Windows / Linux).
@@ -97,7 +99,7 @@ REM → dist\PlatePuzzle.exe
 
 ### Features
 
-- Grid UI for start positions and influence links, built-in example, one-click solve.
+- Grid UI for start positions and influence links, built-in example, one-click solve (see screenshot above).
 - **Russian** and **English** UI and solution text (RU / EN toggle).
 - Step-by-step output like: *“Plate 2 — 4 times right”*.
 - **Single-file** builds for macOS, Windows, and Linux.
