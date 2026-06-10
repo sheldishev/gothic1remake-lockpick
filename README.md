@@ -38,10 +38,12 @@ python3 plate_puzzle_gui.py
 Консольная версия (без GUI):
 
 ```bash
-python3 plate_puzzle_solver.py --plates 6 --positions 6,5,5,7,1,4 --example
+python3 plate_puzzle_solver.py \
+  --positions 6,5,5,7,1,4 \
+  --influences-json '{"1":{"3":1},"3":{"2":-1,"5":-1},"4":{"1":-1,"3":1},"5":{"2":-1,"4":1}}'
 ```
 
-Дополнительные опции CLI: `--influences-json` для связей в формате JSON.
+Справка: `python3 plate_puzzle_solver.py` или `-h`. Язык вывода: `--lang en` (по умолчанию) или `--lang ru`. Флаг `--example` — только для быстрой проверки без JSON.
 
 ### Сборка бинарника
 
@@ -114,10 +116,12 @@ python3 plate_puzzle_gui.py
 CLI (no GUI):
 
 ```bash
-python3 plate_puzzle_solver.py --plates 6 --positions 6,5,5,7,1,4 --example
+python3 plate_puzzle_solver.py \
+  --positions 6,5,5,7,1,4 \
+  --influences-json '{"1":{"3":1},"3":{"2":-1,"5":-1},"4":{"1":-1,"3":1},"5":{"2":-1,"4":1}}'
 ```
 
-Extra CLI options: `--influences-json` for influence links as JSON.
+Help: `python3 plate_puzzle_solver.py` or `-h`. Output language: `--lang en` (default) or `--lang ru`. The `--example` flag is only for a quick smoke test without JSON.
 
 ### Build a standalone binary
 

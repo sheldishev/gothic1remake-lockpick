@@ -16,6 +16,8 @@ from typing import Dict, List, Optional, Tuple
 
 from i18n import APP_TITLE, Lang, t
 from plate_puzzle_solver import (
+    BUILTIN_EXAMPLE_INFLUENCES,
+    BUILTIN_EXAMPLE_POSITIONS,
     DEFAULT_NUM_PLATES,
     MAX_PLATES,
     MAX_POS,
@@ -37,15 +39,11 @@ INFLUENCE_STYLE: Dict[int, Tuple[str, str, str]] = {
     value: (text, bg, fg) for value, text, bg, fg in INFLUENCE_STATES
 }
 
-EXAMPLE_POSITIONS = [6, 5, 5, 7, 1, 4]
+EXAMPLE_POSITIONS = BUILTIN_EXAMPLE_POSITIONS
 EXAMPLE_LINKS: Dict[Tuple[int, int], int] = {
-    (1, 3): 1,
-    (3, 2): -1,
-    (3, 5): -1,
-    (4, 1): -1,
-    (4, 3): 1,
-    (5, 2): -1,
-    (5, 4): 1,
+    (src, tgt): sign
+    for src, targets in BUILTIN_EXAMPLE_INFLUENCES.items()
+    for tgt, sign in targets.items()
 }
 
 FRAME_BG = "#ffffff"

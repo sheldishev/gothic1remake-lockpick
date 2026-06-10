@@ -11,7 +11,8 @@
 Ход допустим только если ни одна затронутая пластинка не выходит за границы 1..7.
 
 Запуск:
-  python plate_puzzle_solver.py
+  python plate_puzzle_solver.py -h
+  python plate_puzzle_solver.py --positions 6,5,5,7,1,4 --influences-json '...'
   python plate_puzzle_gui.py
 """
 
@@ -426,8 +427,9 @@ def print_solution(
     move_sequence: List[Move],
     influences: Dict[int, Dict[int, int]],
     config: PuzzleConfig,
+    lang: Lang = "ru",
 ) -> None:
-    print("\n" + format_solution_text(positions, move_sequence, influences, config))
+    print("\n" + format_solution_text(positions, move_sequence, influences, config, lang))
 
 
 # --- CLI ---
@@ -506,14 +508,22 @@ def chain_influences(num_plates: int) -> Dict[int, Dict[int, int]]:
     return influences
 
 
-EXAMPLE_INFLUENCES_6 = {
-    1: {2: -1, 5: +1},
-    2: {1: -1, 3: +1},
-    3: {2: -1, 4: +1},
-    4: {3: -1, 5: +1},
-    5: {4: -1, 6: +1},
-    6: {5: -1, 1: +1},
+BUILTIN_EXAMPLE_POSITIONS = [6, 5, 5, 7, 1, 4]
+BUILTIN_EXAMPLE_INFLUENCES = {
+    1: {3: 1},
+    3: {2: -1, 5: -1},
+    4: {1: -1, 3: 1},
+    5: {2: -1, 4: 1},
 }
+BUILTIN_EXAMPLE_INFLUENCES_JSON = json.dumps(
+    {str(src): {str(tgt): sign for tgt, sign in targets.items()} for src, targets in BUILTIN_EXAMPLE_INFLUENCES.items()},
+    separators=(",", ":"),
+)
+CLI_EXAMPLE_COMMAND = (
+    "python3 plate_puzzle_solver.py "
+    f"--positions {','.join(str(p) for p in BUILTIN_EXAMPLE_POSITIONS)} "
+    f"--influences-json '{BUILTIN_EXAMPLE_INFLUENCES_JSON}'"
+)
 
 
 def resolve_num_plates(args: argparse.Namespace) -> int:
@@ -530,23 +540,48 @@ def resolve_num_plates(args: argparse.Namespace) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Решатель головоломки с взаимосвязанными пластинками (положения 1..7, цель 4)"
+        description=(
+            "Solver for the interlinked-plate lockpick puzzle.\n"
+            f"Positions {MIN_POS}..{MAX_POS}, goal — every plate at {TARGET}.\n"
+            "Pass --positions and --influences-json to solve from the command line."
+        ),
+        epilog=f"Example:\n  {CLI_EXAMPLE_COMMAND}",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("--plates", type=int, help=f"Количество пластинок ({MIN_PLATES}..{MAX_PLATES})")
-    parser.add_argument("--positions", help="Начальные положения через запятую")
-    parser.add_argument("--influences-json", help='JSON влияний, например: {"1":{"6":1}}')
-    parser.add_argument("--example", action="store_true", help="Пример цепочечного влияния")
+    parser.add_argument(
+        "--plates",
+        type=int,
+        help=f"Number of plates ({MIN_PLATES}..{MAX_PLATES}); inferred from --positions by default",
+    )
+    parser.add_argument("--positions", help="Starting plate positions, comma-separated")
+    parser.add_argument(
+        "--influences-json",
+        help=f"Influence links as JSON, e.g. {BUILTIN_EXAMPLE_INFLUENCES_JSON}",
+    )
+    parser.add_argument(
+        "--example",
+        action="store_true",
+        help="Use built-in influences instead of --influences-json (quick smoke test)",
+    )
+    parser.add_argument(
+        "--lang",
+        choices=["ru", "en"],
+        default="en",
+        help="Output language for status messages and solution (default: en)",
+    )
+    if len(sys.argv) == 1:
+        parser.print_help()
+        return 0
+
     args = parser.parse_args()
+    lang: Lang = args.lang
 
     num_plates = resolve_num_plates(args)
     config = PuzzleConfig(num_plates=num_plates)
 
-    print(
-        f"Головоломка: {num_plates} пластинок, положения {MIN_POS}..{MAX_POS}, "
-        f"цель — все на {TARGET}."
-    )
-    print("Каждую пластинку можно сдвигать влево или вправо.")
-    print("Ход возможен только если все затронутые пластинки остаются в пределах 1..7.\n")
+    print(t("cli_puzzle_header", lang, n=num_plates, min=MIN_POS, max=MAX_POS, target=TARGET))
+    print(t("cli_move_rules", lang))
+    print(t("cli_bounds_rules", lang, min=MIN_POS, max=MAX_POS) + "\n")
 
     if args.positions:
         positions = parse_positions(args.positions, num_plates)
@@ -563,21 +598,21 @@ def main() -> int:
         raw_map = json.loads(args.influences_json)
         influences = {int(k): {int(t): int(s) for t, s in v.items()} for k, v in raw_map.items()}
     elif args.example:
-        if num_plates == 6:
-            influences = deepcopy(EXAMPLE_INFLUENCES_6)
-            print("Используется пример цепочечного влияния для 6 пластинок.")
+        if num_plates == len(BUILTIN_EXAMPLE_POSITIONS):
+            influences = deepcopy(BUILTIN_EXAMPLE_INFLUENCES)
+            print(t("cli_builtin_example", lang))
         else:
             influences = chain_influences(num_plates)
-            print(f"Используется цепочечное влияние для {num_plates} пластинок.")
+            print(t("cli_chain_influence", lang, n=num_plates))
     else:
         influences = parse_influences_interactive(config)
 
-    move_sequence, message = bfs_solve(positions, influences, config)
+    move_sequence, message = bfs_solve(positions, influences, config, lang=lang)
     if move_sequence is None:
         print(message)
         return 1
 
-    print_solution(positions, move_sequence, influences, config)
+    print_solution(positions, move_sequence, influences, config, lang)
     return 0
 
 
